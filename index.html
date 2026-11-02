@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pabrik LKPD - Generator Kurikulum Merdeka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Palette: Teal-Green & Marigold */
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --primary-light: #ccfbf1;
+            --badge: #f59e0b;
+            --badge-text: #78350f;
+            --bg-body: #f0fdfa;
+            --bg-panel: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --focus: #2dd4bf;
+            --paper-bg: #ffffff;
+            --paper-text: #0f172a;
+            --danger: #ef4444;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-body: #022c22;
+                --bg-panel: #064e3b;
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
+                --border: #0d9488;
+                --primary: #14b8a6;
+                --primary-hover: #2dd4bf;
+                --primary-light: #134e4a;
+            }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Figtree', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1, h2, h3, h4, .brand-title { font-family: 'Bricolage Grotesque', sans-serif; }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15);
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-controls label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .header-controls select, .header-controls input {
+            padding: 0.45rem 0.75rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.95);
+            color: #0f172a;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .header-controls input {
+            width: 220px;
+        }
+
+        .layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Panel Kiri */
+        .panel-left {
+            width: 420px;
+            min-width: 380px;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            padding: 1.25rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+        .form-group label { font-weight: 600; font-size: 0.85rem; color: var(--text-main); }
+        .form-group label span.fase-badge { 
+            color: var(--primary); 
+            margin-left: 0.4rem; 
+            font-size: 0.75rem; 
+            background: var(--primary-light); 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            font-weight: 700;
+        }
+        
+        input, select, textarea {
+            font-family: inherit;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-panel);
+            color: var(--text-main);
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--focus);
+            border-color: transparent;
+        }
+
+        /* Chips Multi-Select */
+        .chip-container { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .chip {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            background: var(--bg-panel);
+            color: var(--text-muted);
+        }
+        .chip:hover { border-color: var(--primary); color: var(--primary); }
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        button.btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        button.btn-primary:hover { background: var(--primary-hover); }
+        button.btn-primary:active { transform: scale(0.99); }
+        button:disabled { opacity: 0.65; cursor: not-allowed; }
+
+        /* Panel Kanan */
+        .panel-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-body);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1rem;
+            gap: 0.5rem;
+        }
+        .tab {
+            padding: 0.9rem 1.2rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 3px solid transparent;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .tab:hover { color: var(--primary); }
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: none;
+        }
+        .tab-content.active { display: block; }
+
+        /* Kertas A4 Format Siap Cetak */
+        .paper {
+            background: var(--paper-bg) !important;
+            color: var(--paper-text) !important;
+            max-width: 820px;
+            margin: 0 auto;
+            min-height: 1050px;
+            padding: 3rem 3.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            font-family: 'Figtree', Arial, sans-serif;
+            position: relative;
+        }
+
+        .paper h1, .paper h2, .paper h3, .paper h4 { 
+            font-family: 'Bricolage Grotesque', Arial, sans-serif; 
+            color: #000000 !important; 
+        }
+        
+        .lkpd-title { 
+            text-align: center; 
+            text-decoration: underline; 
+            margin-bottom: 1.8rem; 
+            font-size: 1.5rem; 
+            text-transform: uppercase; 
+            line-height: 1.3;
+        }
+
+        .identitas-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 1.8rem; 
+            font-size: 0.95rem; 
+        }
+        .identitas-table td { padding: 4px 0; vertical-align: top; color: #000; }
+        .identitas-table td:first-child { width: 170px; font-weight: 700; }
+        
+        .section-title { 
+            font-size: 1.15rem; 
+            border-bottom: 2px solid #000; 
+            margin: 1.8rem 0 0.8rem 0; 
+            padding-bottom: 0.2rem; 
+            font-weight: 700; 
+            text-transform: uppercase;
+        }
+        
+        .kegiatan-box { margin-top: 1.8rem; }
+        .kegiatan-header { 
+            background: #f0fdfa; 
+            border-left: 4px solid #0f766e; 
+            padding: 0.8rem 1rem; 
+            margin-bottom: 1rem; 
+            color: #000; 
+            border-radius: 0 6px 6px 0;
+        }
+        .badge-alur { 
+            background: var(--badge); 
+            color: var(--badge-text); 
+            font-size: 0.72rem; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            margin-bottom: 0.4rem; 
+            display: inline-block; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        
+        .butir-tugas { margin-bottom: 1.4rem; padding-left: 0.8rem; color: #000; }
+        .butir-judul { font-weight: 700; margin-bottom: 0.3rem; }
+        .respons-area { margin-top: 0.8rem; }
+        
+        table.data-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; margin-bottom: 1rem; }
+        table.data-table th, table.data-table td { border: 1px solid #000; padding: 8px 10px; text-align: left; font-size: 0.9rem; color: #000; }
+        table.data-table th { background: #f1f5f9; font-weight: 700; }
+
+        .line-blank { border-bottom: 1px dotted #000; display: block; width: 100%; height: 1.8em; margin-bottom: 0.4rem; }
+        .uraian-blank { width: 100%; border: 1px dotted #000; margin-top: 0.5rem; border-radius: 4px; }
+
+        /* Toolbar Actions */
+        .toolbar { 
+            display: flex; 
+            gap: 0.8rem; 
+            justify-content: flex-end; 
+            margin-bottom: 1.2rem; 
+            max-width: 820px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        .btn-outline { 
+            border: 1px solid var(--primary); 
+            color: var(--primary); 
+            background: var(--bg-panel); 
+            padding: 0.5rem 1rem; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        .prompt-box { 
+            background: #0f172a; 
+            color: #f8fafc; 
+            padding: 1.2rem; 
+            border-radius: 8px; 
+            font-family: monospace; 
+            white-space: pre-wrap; 
+            font-size: 0.85rem; 
+            overflow-x: auto; 
+            line-height: 1.6;
+        }
+
+        /* Status & Placeholder */
+        .empty-state { text-align: center; color: var(--text-muted); margin-top: 5rem; font-size: 1rem; }
+        #status-msg { margin-top: 0.5rem; font-size: 0.85rem; font-weight: 600; text-align: center; min-height: 1.2em; }
+        .status-error { color: var(--danger); }
+        .status-success { color: var(--primary); }
+        .status-loading { color: var(--badge); }
+
+        ol, ul { padding-left: 1.4rem; }
+        li { margin-bottom: 0.4rem; }
+
+        @media (max-width: 900px) {
+            .layout { flex-direction: column; overflow: auto; }
+            .panel-left { width: 100%; min-width: 100%; border-right: none; border-bottom: 1px solid var(--border); overflow-y: visible; }
+            body { overflow: auto; }
+            .paper { padding: 1.8rem; min-height: auto; }
+            .header-controls { width: 100%; justify-content: flex-start; }
+            .header-controls input { width: 100%; }
+        }
+
+        @media print {
+            body { background: white !important; color: black !important; display: block; height: auto; overflow: visible; }
+            header, .panel-left, .tabs, .toolbar { display: none !important; }
+            .panel-right, .tab-content { display: block !important; padding: 0 !important; overflow: visible !important; }
+            .paper { box-shadow: none !important; padding: 0 !important; max-width: 100% !important; margin: 0 !important; min-height: auto !important; }
+            #tab-guru:not(.active) .paper, #tab-prompt:not(.active) { display: none !important; }
+            #tab-siswa:not(.active) .paper { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <span style="font-size: 1.4rem;">⚙️</span>
+            <span class="brand-title">Pabrik LKPD</span>
+        </div>
+        <div class="header-controls">
+            
+            <div>
+                <label for="apiKey">API Key:</label>
+                <input type="password" id="apiKey" placeholder="Tempel Gemini API Key di sini...">
+            </div>
+        </div>
+    </header>
+
+    <div class="layout">
+        <!-- FORM PANEL -->
+        <div class="panel-left">
+            <div class="form-group">
+                <label for="jenjang">Jenjang Pendidikan</label>
+                <select id="jenjang">
+                    <option value="SD/MI">SD/MI</option>
+                    <option value="SMP/MTs">SMP/MTs</option>
+                    <option value="SMA/MA">SMA/MA</option>
+                    <option value="SMK">SMK</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="kelas">Kelas <span class="fase-badge" id="label-fase">Fase A</span></label>
+                <select id="kelas"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="mapel">Mata Pelajaran</label>
+                <input type="text" id="mapel" list="mapel-list" placeholder="Ketik atau pilih mapel...">
+                <datalist id="mapel-list">
+                    <option value="PJOK"></option>
+                    <option value="Matematika"></option>
+                    <option value="Bahasa Indonesia"></option>
+                    <option value="Bahasa Inggris"></option>
+                    <option value="IPAS"></option>
+                    <option value="IPA"></option>
+                    <option value="IPS"></option>
+                    <option value="Pendidikan Pancasila"></option>
+                    <option value="Pendidikan Agama Islam"></option>
+                    <option value="Informatika"></option>
+                    <option value="Seni Musik"></option>
+                    <option value="Seni Rupa"></option>
+                    <option value="Fisika"></option>
+                    <option value="Kimia"></option>
+                    <option value="Biologi"></option>
+                    <option value="Sejarah"></option>
+                    <option value="Sosiologi"></option>
+                    <option value="Ekonomi"></option>
+                    <option value="Geografi"></option>
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label for="bab">Bab / Topik / Unit</label>
+                <input type="text" id="bab" placeholder="Contoh: Bab 1 - Aktivitas Gerak Dasar Lokomotor">
+            </div>
+
+            <div class="form-group">
+                <label for="materi">Materi Pokok</label>
+                <input type="text" id="materi" placeholder="Contoh: Berjalan, berlari, dan melompat">
+            </div>
+
+            <div class="form-group">
+                <label for="tujuan">Capaian / Tujuan Pembelajaran (Opsional)</label>
+                <textarea id="tujuan" rows="2" placeholder="Jika kosong, AI akan membuatkan tujuan yang selaras dengan Kurikulum Merdeka."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 0.8rem;">
+                <div class="form-group" style="flex:1">
+                    <label for="jml-kegiatan">Jumlah Kegiatan</label>
+                    <select id="jml-kegiatan">
+                        <option value="2">2 Kegiatan</option>
+                        <option value="3" selected>3 Kegiatan</option>
+                        <option value="4">4 Kegiatan</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label for="waktu">Alokasi Waktu</label>
+                    <input type="text" id="waktu" placeholder="Contoh: 2 x 35 menit">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Bentuk Respons Siswa</label>
+                <div class="chip-container" id="chips-respons">
+                    <div class="chip active" data-val="Kotak centang">Kotak centang</div>
+                    <div class="chip" data-val="Ya/belum">Ya/belum</div>
+                    <div class="chip active" data-val="Isian singkat">Isian singkat</div>
+                    <div class="chip" data-val="Tabel pengamatan">Tabel pengamatan</div>
+                    <div class="chip" data-val="Uraian/studi kasus">Uraian/studi kasus</div>
+                    <div class="chip" data-val="Menjodohkan/mengurutkan">Menjodohkan</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Dimensi Profil Lulusan</label>
+                <div class="chip-container" id="chips-dimensi">
+                    <div class="chip active" data-val="Keimanan dan Ketakwaan">Keimanan & Ketakwaan</div>
+                    <div class="chip" data-val="Kewargaan">Kewargaan</div>
+                    <div class="chip active" data-val="Penalaran Kritis">Penalaran Kritis</div>
+                    <div class="chip active" data-val="Kreativitas">Kreativitas</div>
+                    <div class="chip active" data-val="Kolaborasi">Kolaborasi</div>
+                    <div class="chip" data-val="Kemandirian">Kemandirian</div>
+                    <div class="chip" data-val="Kesehatan">Kesehatan</div>
+                    <div class="chip" data-val="Komunikasi">Komunikasi</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="konteks">Konteks Lokal / Catatan (Opsional)</label>
+                <textarea id="konteks" rows="2" placeholder="Misal: Lingkungan pesisir, menggunakan bahan bekas di sekitar..."></textarea>
+            </div>
+
+            <button class="btn-primary" id="btn-susun" onclick="susunLKPD()">
+                <span>🚀</span> <span>Susun LKPD</span>
+            </button>
+            <div id="status-msg"></div>
+        </div>
+
+        <!-- OUTPUT PANEL -->
+        <div class="panel-right">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('siswa')">📄 Lembar Siswa</div>
+                <div class="tab" onclick="switchTab('guru')">📑 Lampiran Guru</div>
+                <div class="tab" onclick="switchTab('prompt')">💬 Prompt AI</div>
+            </div>
+
+            <!-- TAB 1: LEMBAR SISWA -->
+            <div id="tab-siswa" class="tab-content active">
+                <div class="toolbar">
+                    <button class="btn-outline" onclick="cetakDokumen('paper-siswa')">🖨️ Cetak</button>
+                    <button class="btn-outline" onclick="unduhWord('paper-siswa', 'LKPD_Siswa')">💾 Unduh File Word (.doc)</button>
+                </div>
+                <div class="paper" id="paper-siswa">
+                    <div class="empty-state">
+                        <h3>Belum Ada LKPD</h3>
+                        <p style="margin-top:0.4rem;">Isi data pembelajaran di panel kiri, lalu tekan <strong>Susun LKPD</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: LAMPIRAN GURU -->
+            <div id="tab-guru" class="tab-content">
+                <div class="toolbar">
+                    <button class="btn-outline" onclick="cetakDokumen('paper-guru')">🖨️ Cetak</button>
+                    <button class="btn-outline" onclick="unduhWord('paper-guru', 'Lampiran_Guru')">💾 Unduh File Word (.doc)</button>
+                </div>
+                <div class="paper" id="paper-guru">
+                    <div class="empty-state">
+                        <h3>Lampiran Guru Belum Ada</h3>
+                        <p style="margin-top:0.4rem;">Kunci jawaban dan rubrik asesmen akan tampil di sini setelah penyusunan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: PROMPT AI -->
+            <div id="tab-prompt" class="tab-content">
+                <div class="toolbar">
+                    <button class="btn-outline" onclick="salinPrompt()">📋 Salin Prompt Kompleks</button>
+                </div>
+                <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                    Prompt ini berisi kerangka instruksi ketat beserta skema JSON. Anda bisa menyalin dan menggunakannya secara manual di ChatGPT, Claude, atau Gemini Web jika koneksi API langsung mengalami hambatan.
+                </p>
+                <div class="prompt-box" id="prompt-text">Prompt belum di-generate. Tekan "Susun LKPD" untuk membuat prompt.</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- Data Kelas & Map Fase ---
+    const dataKelas = {
+        'SD/MI': ['I', 'II', 'III', 'IV', 'V', 'VI'],
+        'SMP/MTs': ['VII', 'VIII', 'IX'],
+        'SMA/MA': ['X', 'XI', 'XII'],
+        'SMK': ['X', 'XI', 'XII']
+    };
+    const petaFase = { 
+        'I':'A', 'II':'A', 'III':'B', 'IV':'B', 'V':'C', 'VI':'C', 
+        'VII':'D', 'VIII':'D', 'IX':'D', 'X':'E', 'XI':'F', 'XII':'F' 
+    };
+
+    // Preset data awal
+    function initDefaultValues() {
+        document.getElementById('mapel').value = "PJOK";
+        document.getElementById('bab').value = "Bab 1 - Aktivitas Pola Gerak Dasar Lokomotor";
+        document.getElementById('materi').value = "Berjalan, berlari, dan melompat";
+        document.getElementById('waktu').value = "2 x 35 menit";
+    }
+
+    // Dynamic Select Handling
+    const selectJenjang = document.getElementById('jenjang');
+    const selectKelas = document.getElementById('kelas');
+    const labelFase = document.getElementById('label-fase');
+
+    selectJenjang.addEventListener('change', (e) => {
+        selectKelas.innerHTML = '';
+        dataKelas[e.target.value].forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k; 
+            opt.textContent = 'Kelas ' + k;
+            selectKelas.appendChild(opt);
+        });
+        updateFase();
+    });
+
+    selectKelas.addEventListener('change', updateFase);
+
+    function updateFase() {
+        const kelas = selectKelas.value;
+        labelFase.textContent = 'Fase ' + (petaFase[kelas] || 'A');
+    }
+
+    // Init
+   selectJenjang.dispatchEvent(new Event('change'));
+    initDefaultValues();
+
+    // Otomatis mengambil API Key yang pernah tersimpan di browser
+    const savedApiKey = localStorage.getItem('gemini_api_key');
+    if (savedApiKey) {
+        document.getElementById('apiKey').value = savedApiKey;
+    }
+
+    // Chip Multi-select
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => { chip.classList.toggle('active'); });
+    });
+
+    function getChipsValues(containerId) {
+        return Array.from(document.querySelectorAll(`#${containerId} .chip.active`)).map(c => c.dataset.val);
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        const targetTab = Array.from(document.querySelectorAll('.tab')).find(t => t.getAttribute('onclick')?.includes(tabId));
+        if (targetTab) targetTab.classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // Safe HTML Escaping
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>'"]/g, tag => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[tag]));
+    }
+
+    // --- Prompt Generator ---
+    function buildSystemPrompt() {
+        const mapel = document.getElementById('mapel').value.trim() || 'MATA PELAJARAN';
+        const jenjang = document.getElementById('jenjang').value;
+        const kelas = document.getElementById('kelas').value;
+        const fase = petaFase[kelas] || 'A';
+        const bab = document.getElementById('bab').value.trim() || '-';
+        const materi = document.getElementById('materi').value.trim() || '-';
+        const tp = document.getElementById('tujuan').value.trim() || 'Buatkan tujuan pembelajaran berdasar CP Kurikulum Merdeka.';
+        const jml = document.getElementById('jml-kegiatan').value;
+        const waktu = document.getElementById('waktu').value.trim() || '2 x 35 menit';
+        const respons = getChipsValues('chips-respons').join(', ') || 'Variasi isian dan centang';
+        const dimensi = getChipsValues('chips-dimensi').join(', ') || 'Penalaran Kritis dan Kreativitas';
+        const konteks = document.getElementById('konteks').value.trim() || 'Lingkungan sekolah umum.';
+
+        return `PERAN: Kamu pengembang bahan ajar dan guru profesional yang ahli menyusun LKPD Kurikulum Merdeka untuk semua mapel dan jenjang, dengan pendekatan Pembelajaran Mendalam: berkesadaran (mindful), bermakna (meaningful), dan menggembirakan (joyful). Gunakan bahasa Indonesia baku yang ramah dan sesuai perkembangan peserta didik.
+
+DATA INPUT PEMBELAJARAN:
+- Mata Pelajaran: ${mapel}
+- Jenjang/Kelas/Fase: ${jenjang} / Kelas ${kelas} / Fase ${fase}
+- Bab/Topik: ${bab}
+- Materi Pokok: ${materi}
+- Capaian / Tujuan Pembelajaran: ${tp}
+- Jumlah Kegiatan: ${jml}
+- Alokasi Waktu: ${waktu}
+- Bentuk Respons Peserta Didik: ${respons}
+- Dimensi Profil Lulusan: ${dimensi}
+- Konteks Lokal / Catatan: ${konteks}
+
+KERANGKA BAKU (urutan dan bagian tidak boleh diubah):
+1. Judul: LEMBAR KERJA PESERTA DIDIK dan nama mapel huruf kapital.
+2. Tabel identitas: Satuan Pendidikan (titik-titik), Mata Pelajaran, Kelas / Fase, Bab, Nama Peserta Didik (titik-titik), Hari / Tanggal (titik-titik).
+3. Tujuan Pembelajaran: 1 paragraf diawali "Melalui kegiatan …, kamu diharapkan dapat …" dengan kata kerja operasional dan dimensi sikap.
+4. Petunjuk Belajar: 5 butir bernomor (berdoa; ikuti arahan guru; kerjakan teliti dan semangat; cara mengisi sesuai bentuk respons yang benar-benar ada; bertanya bila belum paham).
+5. Kegiatan inti "KEGIATAN n: JUDUL HURUF KAPITAL": 1 kalimat pengantar dan 3–5 butir tugas. Tiap butir: judul singkat, instruksi 1–3 kalimat yang langsung bisa dikerjakan, dan respons peserta didik. Urut mudah ke sulit.
+6. Refleksi Diri: tepat 3 pertanyaan (pilihan favorit/paling dipahami; skala perasaan/pemahaman; pertanyaan terbuka untuk guru dengan 2 baris titik-titik).
+7. Tabel penutup: Paraf Guru dan Nilai.
+
+ALUR PEMBELAJARAN MENDALAM: susun kegiatan mengikuti tiga pengalaman belajar: MEMAHAMI (eksplorasi konsep lewat pengalaman nyata), MENGAPLIKASI (menerapkan pada masalah/konteks nyata, berkolaborasi), MEREFLEKSI (menilai proses dan hasil belajar sendiri). Beri tiap kegiatan label salah satunya. Gunakan pertanyaan pemantik, konteks sekitar peserta didik, dan tugas yang menuntut berpikir, bukan hafalan.
+
+ADAPTASI FASE:
+- Fase A (I–II): kalimat sangat pendek, nuansa bermain, minim menulis.
+- Fase B (III–IV): campuran praktik dan isian singkat.
+- Fase C (V–VI): mulai "mengapa/bagaimana", tabel pengamatan sederhana.
+- Fase D (VII–IX): analisis sederhana, data, studi kasus.
+- Fase E–F (X–XII): bahasa formal-komunikatif, analisis, proyek, soal HOTS.
+
+KUALITAS: selaras CP/TP; sarana sederhana; aman, inklusif, bebas SARA dan bias gender; jangan mengarang fakta; kunci jawaban di lampiran guru.
+
+PENTING: Output HARUS HANYA BERUPA JSON VALID tanpa awalan/akhiran teks apapun, tanpa blok markdown code (\`\`\`json).
+Gunakan skema JSON persis berikut:
+{
+  "judul_mapel": "NAMA MAPEL HURUF KAPITAL",
+  "tujuan": "Melalui kegiatan ..., kamu diharapkan dapat ...",
+  "petunjuk": ["5 butir string"],
+  "kegiatan": [{
+    "judul": "JUDUL KEGIATAN KAPITAL",
+    "alur": "Memahami | Mengaplikasi | Merefleksi",
+    "pengantar": "1 kalimat pengantar",
+    "butir": [{
+      "judul": "Judul singkat",
+      "deskripsi": "Instruksi pengerjaan",
+      "respons": {
+        "tipe": "centang | pilihan | isian | tabel | uraian | jodoh",
+        "opsi": ["opsi1", "opsi2"],
+        "kolom": ["kolom1", "kolom2"],
+        "baris": 3,
+        "garis": 2
+      }
+    }]
+  }],
+  "refleksi": {
+    "judul": "Refleksi Diri",
+    "pengantar": "Mari merenungkan kegiatan hari ini...",
+    "q1": {"teks": "Kegiatan mana yang paling kamu sukai?", "pilihan": ["Pilihan A", "Pilihan B"]},
+    "q2": {"teks": "Bagaimana perasaanmu setelah belajar?", "skala": ["Sangat Senang", "Cukup Senang", "Perlu Belajar Lagi"]},
+    "q3": {"teks": "Apa hal baru yang ingin kamu tanyakan pada guru?"}
+  },
+  "guru": {
+    "dimensi": ["Dimensi profil lulusan + alasan"],
+    "pertanyaan_pemantik": ["2-3 pertanyaan"],
+    "kunci": [{"kegiatan": "KEGIATAN 1", "jawaban": "Kunci jawaban/indikator"}],
+    "rubrik": [{"kriteria": "Kriteria A", "perlu_bimbingan": "Deskripsi", "cakap": "Deskripsi", "mahir": "Deskripsi"}],
+    "cara_nilai": "Penjelasan pengisian nilai",
+    "diferensiasi": ["2-3 saran diferensiasi"]
+  }
+}`;
+    }
+
+    // --- Gemini API Call with Auto Fallback ---
+    // --- Pemanggilan Gemini API dengan Auto Fallback Terbaru ---
+    async function callGeminiAPI(promptText, apiKey, chosenModel) {
+        let modelsToTry = [];
+
+        // Menentukan daftar model yang akan dicoba secara berurutan
+        if (chosenModel === 'auto') {
+            modelsToTry = ['gemini-3-flash-preview', 'gemini-3.8-flash'];
+        } else {
+            modelsToTry = [chosenModel, 'gemini-3-flash-preview', 'gemini-3.8-flash'].filter((v, i, a) => a.indexOf(v) === i);
+        }
+
+        let lastErr = null;
+
+        for (const model of modelsToTry) {
+            try {
+                updateStatus(`Menghubungkan ke Gemini API (${model})...`, 'loading');
+
+                // Menggunakan URL dengan query parameter ?key=
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: promptText }] }],
+                    generationConfig: { responseMimeType: "application/json" }
+                };
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || `HTTP ${res.status} (${res.statusText})`);
+                }
+
+                const data = await res.json();
+                const textOutput = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!textOutput) {
+                    throw new Error("Respon dari AI kosong.");
+                }
+
+                return textOutput; // Berhasil! Mengembalikan hasil JSON dari AI
+
+            } catch (err) {
+                console.warn(`Gagal dengan model ${model}:`, err);
+                lastErr = err;
+                // Loop akan otomatis berlanjut mencoba model berikutnya di modelsToTry
+            }
+        }
+
+        // Jika semua model gagal
+        throw new Error(`Semua model gagal dihubungi. Error terakhir: ${lastErr?.message}`);
+    }
+
+    function updateStatus(text, state) {
+        const el = document.getElementById('status-msg');
+        el.textContent = text;
+        el.className = state ? `status-${state}` : '';
+    }
+
+    async function susunLKPD() {
+        const btn = document.getElementById('btn-susun');
+        const apiKey = document.getElementById('apiKey').value.trim();
+        const modelChoice = 'auto';
+
+        const promptText = buildSystemPrompt();
+        document.getElementById('prompt-text').textContent = promptText;
+
+        if (!apiKey) {
+            updateStatus("API Key belum diisi! Silakan tempel API Key atau gunakan tab 'Prompt AI' secara manual.", "error");
+            switchTab('prompt');
+            return;
+        }
+
+        // Menyimpan API Key ke localStorage
+        localStorage.setItem('gemini_api_key', apiKey);
+
+        btn.disabled = true;
+        btn.innerHTML = `<span>⏳</span> <span>Proses Menyusun...</span>`;
+
+        try {
+            const apiResult = await callGeminiAPI(promptText, apiKey, modelChoice);
+            
+            // Perbaikan: apiResult sudah langsung berupa teks JSON, jadi tidak perlu .text
+            if (!apiResult) {
+                throw new Error("Respon dari Gemini API kosong.");
+            }
+            
+            let cleanJsonStr = apiResult.replace(/```json/gi, '').replace(/```/g, '').trim();
+            
+            let lkpdData;
+            try {
+                lkpdData = JSON.parse(cleanJsonStr);
+            } catch (pErr) {
+                console.error("JSON Parsing Error. Output text:", apiResult.text);
+                throw new Error("Format JSON dari AI tidak valid. Menampilkan prompt cadangan.");
+            }
+
+            renderSiswa(lkpdData);
+            renderGuru(lkpdData);
+
+            updateStatus(`LKPD Berhasil Disusun! (Menggunakan ${apiResult.modelUsed})`, "success");
+            switchTab('siswa');
+
+        } catch (err) {
+            console.error(err);
+            updateStatus(`Gagal: ${err.message}`, "error");
+            switchTab('prompt');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<span>🚀</span> <span>Susun LKPD</span>`;
+        }
+    }
+
+    // --- RENDERERS ---
+    function renderSiswa(data) {
+        const mapel = document.getElementById('mapel').value.trim() || data.judul_mapel || 'MATA PELAJARAN';
+        const kelas = document.getElementById('kelas').value;
+        const fase = petaFase[kelas] || 'A';
+        const bab = document.getElementById('bab').value.trim() || '.........................';
+
+        let html = `<h1 class="lkpd-title">LEMBAR KERJA PESERTA DIDIK<br>${escapeHTML(data.judul_mapel || mapel)}</h1>`;
+
+        // 1. Identitas
+        html += `<table class="identitas-table">
+            <tr><td>Satuan Pendidikan</td><td>: ...............................................</td></tr>
+            <tr><td>Mata Pelajaran</td><td>: ${escapeHTML(mapel)}</td></tr>
+            <tr><td>Kelas / Fase</td><td>: ${kelas} / ${fase}</td></tr>
+            <tr><td>Bab / Topik</td><td>: ${escapeHTML(bab)}</td></tr>
+            <tr><td>Nama Peserta Didik</td><td>: ...............................................</td></tr>
+            <tr><td>Hari, Tanggal</td><td>: ...............................................</td></tr>
+        </table>`;
+
+        // 2. Tujuan
+        html += `<h2 class="section-title">A. Tujuan Pembelajaran</h2>`;
+        html += `<p style="line-height:1.6;">${escapeHTML(data.tujuan)}</p>`;
+
+        // 3. Petunjuk
+        html += `<h2 class="section-title">B. Petunjuk Belajar</h2><ol>`;
+        (data.petunjuk || []).forEach(p => html += `<li>${escapeHTML(p)}</li>`);
+        html += `</ol>`;
+
+        // 4. Kegiatan Inti
+        html += `<h2 class="section-title">C. Kegiatan Pembelajaran</h2>`;
+        (data.kegiatan || []).forEach((keg, i) => {
+            html += `<div class="kegiatan-box">
+                <div class="kegiatan-header">
+                    <div class="badge-alur">${escapeHTML(keg.alur || 'PENGALAMAN BELAJAR')}</div>
+                    <h3 style="font-size:1.1rem;">KEGIATAN ${i+1}: ${escapeHTML(keg.judul)}</h3>
+                    <p style="margin-top:0.4rem; font-style:italic; font-size:0.92rem;">${escapeHTML(keg.pengantar)}</p>
+                </div>`;
+
+            (keg.butir || []).forEach((b, j) => {
+                html += `<div class="butir-tugas">
+                    <div class="butir-judul">${j+1}. ${escapeHTML(b.judul)}</div>
+                    <p style="font-size:0.95rem;">${escapeHTML(b.deskripsi)}</p>
+                    <div class="respons-area">${renderRespons(b.respons)}</div>
+                </div>`;
+            });
+            html += `</div>`;
+        });
+
+        // 5. Refleksi Diri
+        if (data.refleksi) {
+            html += `<h2 class="section-title">D. Refleksi Diri</h2>`;
+            if (data.refleksi.pengantar) {
+                html += `<p style="margin-bottom:0.8rem;">${escapeHTML(data.refleksi.pengantar)}</p>`;
+            }
+            html += `<ol style="padding-left: 1.4rem;">`;
+
+            if (data.refleksi.q1?.teks) {
+                html += `<li style="margin-bottom:1.2rem;">${escapeHTML(data.refleksi.q1.teks)}<br><div style="margin-top:0.4rem;">`;
+                (data.refleksi.q1.pilihan || []).forEach(p => html += `<span style="margin-right:1.5rem; display:inline-block;">☐ ${escapeHTML(p)}</span>`);
+                html += `</div></li>`;
+            }
+
+            if (data.refleksi.q2?.teks) {
+                html += `<li style="margin-bottom:1.2rem;">${escapeHTML(data.refleksi.q2.teks)}<br><div style="margin-top:0.4rem;">`;
+                (data.refleksi.q2.skala || []).forEach(s => html += `<span style="margin-right:1.5rem; display:inline-block;">( ) ${escapeHTML(s)}</span>`);
+                html += `</div></li>`;
+            }
+
+            if (data.refleksi.q3?.teks) {
+                html += `<li>${escapeHTML(data.refleksi.q3.teks)}
+                    <div class="line-blank"></div>
+                    <div class="line-blank"></div>
+                </li>`;
+            }
+            html += `</ol>`;
+        }
+
+        // 6. Penutup / Paraf
+        html += `<table class="data-table" style="margin-top: 3rem; width: 65%; margin-left: auto; margin-right: auto; text-align: center;">
+            <tr><th style="width:50%; text-align:center;">Paraf Guru</th><th style="text-align:center;">Nilai & Catatan</th></tr>
+            <tr><td style="height: 90px;"></td><td></td></tr>
+        </table>`;
+
+        document.getElementById('paper-siswa').innerHTML = html;
+    }
+
+    function renderRespons(res) {
+        if (!res) return `<div class="uraian-blank" style="height:70px;"></div>`;
+        let h = '';
+        const tipe = res.tipe ? res.tipe.toLowerCase() : 'uraian';
+
+        if (tipe === 'centang') {
+            (res.opsi || []).forEach(o => h += `<div style="margin: 0.3rem 0;">☐ ${escapeHTML(o)}</div>`);
+        } else if (tipe === 'pilihan') {
+            (res.opsi || []).forEach(o => h += `<div style="margin: 0.3rem 0;">( ) ${escapeHTML(o)}</div>`);
+        } else if (tipe === 'isian') {
+            const count = res.garis || 1;
+            for (let i = 0; i < count; i++) h += `<div class="line-blank"></div>`;
+        } else if (tipe === 'uraian') {
+            const lines = res.garis || res.baris || 3;
+            h += `<div class="uraian-blank" style="height: ${lines * 32}px;"></div>`;
+        } else if (tipe.includes('jodoh')) {
+            h += `<table style="width: 100%; border-collapse:collapse; margin-top:0.4rem;">`;
+            (res.opsi || []).forEach(o => {
+                h += `<tr>
+                    <td style="padding:6px 0; width:40%; border:none;">${escapeHTML(o)}</td>
+                    <td style="text-align:center; width:20%; border:none;">.........</td>
+                    <td style="border-bottom:1px dotted #000; width:40%;"></td>
+                </tr>`;
+            });
+            h += `</table>`;
+        } else if (tipe === 'tabel') {
+            h += `<table class="data-table"><tr>`;
+            const cols = res.kolom && res.kolom.length ? res.kolom : ['No', 'Hasil Pengamatan', 'Catatan'];
+            cols.forEach(k => h += `<th>${escapeHTML(k)}</th>`);
+            h += `</tr>`;
+            const rows = res.baris || 3;
+            for (let i = 0; i < rows; i++) {
+                h += `<tr>`;
+                cols.forEach(() => h += `<td style="height: 35px;"></td>`);
+                h += `</tr>`;
+            }
+            h += `</table>`;
+        } else {
+            h += `<div class="uraian-blank" style="height:80px;"></div>`;
+        }
+        return h;
+    }
+
+    function renderGuru(data) {
+        const g = data.guru;
+        if (!g) return;
+
+        let html = `<h1 class="lkpd-title">LAMPIRAN GURU & ASESMEN</h1>`;
+
+        // 1. Profil Pelajar Pancasila
+        html += `<h2 class="section-title">1. Dimensi Profil Lulusan</h2><ul>`;
+        (g.dimensi || []).forEach(d => html += `<li>${escapeHTML(d)}</li>`);
+        html += `</ul>`;
+
+        // 2. Pertanyaan Pemantik
+        html += `<h2 class="section-title">2. Pertanyaan Pemantik</h2><ul>`;
+        (g.pertanyaan_pemantik || []).forEach(p => html += `<li>${escapeHTML(p)}</li>`);
+        html += `</ul>`;
+
+        // 3. Kunci Jawaban
+        html += `<h2 class="section-title">3. Kunci Jawaban / Indikator Jawaban</h2>
+            <table class="data-table">
+            <tr><th style="width:25%;">Kegiatan</th><th>Kunci Jawaban / Pedoman</th></tr>`;
+        (g.kunci || []).forEach(k => {
+            html += `<tr>
+                <td style="font-weight:700;">${escapeHTML(k.kegiatan)}</td>
+                <td>${escapeHTML(k.jawaban)}</td>
+            </tr>`;
+        });
+        html += `</table>`;
+
+        // 4. Rubrik Asesmen
+        html += `<h2 class="section-title">4. Rubrik Penilaian Formatil</h2>
+            <table class="data-table">
+            <tr>
+                <th style="width:22%;">Kriteria</th>
+                <th style="width:26%;">Perlu Bimbingan</th>
+                <th style="width:26%;">Cakap</th>
+                <th style="width:26%;">Mahir</th>
+            </tr>`;
+        (g.rubrik || []).forEach(r => {
+            html += `<tr>
+                <td style="font-weight:700;">${escapeHTML(r.kriteria)}</td>
+                <td>${escapeHTML(r.perlu_bimbingan)}</td>
+                <td>${escapeHTML(r.cakap)}</td>
+                <td>${escapeHTML(r.mahir)}</td>
+            </tr>`;
+        });
+        html += `</table>`;
+
+        // 5. Cara Menilai
+        html += `<h2 class="section-title">5. Pedoman Penskoran</h2>
+            <p style="line-height:1.6;">${escapeHTML(g.cara_nilai)}</p>`;
+
+        // 6. Diferensiasi
+        html += `<h2 class="section-title">6. Panduan Diferensiasi Pembelajaran</h2><ul>`;
+        (g.diferensiasi || []).forEach(d => html += `<li>${escapeHTML(d)}</li>`);
+        html += `</ul>`;
+
+        document.getElementById('paper-guru').innerHTML = html;
+    }
+
+    function salinPrompt() {
+        const text = document.getElementById('prompt-text').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            updateStatus('Prompt berhasil disalin ke clipboard!', 'success');
+        });
+    }
+
+    // --- FUNGSI CETAK DOKUMEN INDEPENDEN ---
+    function cetakDokumen(elementId) {
+        const content = document.getElementById(elementId).innerHTML;
+        if (!content || content.includes('empty-state')) {
+            updateStatus('Tidak ada dokumen untuk dicetak. Susun LKPD terlebih dahulu.', 'error');
+            return;
+        }
+
+        const css = `
+            @page { size: A4; margin: 2cm; }
+            body { font-family: 'Figtree', Arial, sans-serif; line-height: 1.5; color: #000; padding: 20px; background: #fff; }
+            h1, h2, h3, h4 { font-family: Arial, sans-serif; color: #000 !important; }
+            .lkpd-title { text-align: center; text-decoration: underline; margin-bottom: 1.8rem; font-size: 1.5rem; text-transform: uppercase; font-weight: bold; }
+            .identitas-table { width: 100%; border-collapse: collapse; margin-bottom: 1.8rem; font-size: 0.95rem; }
+            .identitas-table td { padding: 4px 0; vertical-align: top; color: #000; }
+            .identitas-table td:first-child { width: 170px; font-weight: 700; }
+            .section-title { font-size: 1.15rem; border-bottom: 2px solid #000; margin: 1.8rem 0 0.8rem 0; padding-bottom: 0.2rem; font-weight: 700; text-transform: uppercase; }
+            .kegiatan-box { margin-top: 1.8rem; }
+            .kegiatan-header { background: #f0fdfa; border-left: 4px solid #0f766e; padding: 0.8rem 1rem; margin-bottom: 1rem; color: #000; border-radius: 0 6px 6px 0; }
+            .badge-alur { background: #f59e0b; color: #78350f; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 800; margin-bottom: 0.4rem; display: inline-block; text-transform: uppercase; }
+            .butir-tugas { margin-bottom: 1.4rem; padding-left: 0.8rem; color: #000; }
+            .butir-judul { font-weight: 700; margin-bottom: 0.3rem; }
+            table.data-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; margin-bottom: 1rem; }
+            table.data-table th, table.data-table td { border: 1px solid #000; padding: 8px 10px; text-align: left; font-size: 0.9rem; color: #000; }
+            table.data-table th { background: #f1f5f9; font-weight: 700; }
+            .line-blank { border-bottom: 1px dotted #000; display: block; width: 100%; height: 1.8em; margin-bottom: 0.4rem; }
+            .uraian-blank { width: 100%; border: 1px dotted #000; margin-top: 0.5rem; border-radius: 4px; }
+        `;
+
+        const printWindow = window.open('', '_blank', 'width=900,height=800');
+        if (!printWindow) {
+            // Jika popup diblokir, jalankan window.print() langsung sebagai fallback
+            window.print();
+            return;
+        }
+
+        printWindow.document.write(`<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Cetak LKPD</title>
+            <style>${css}</style>
+        </head>
+        <body>
+            ${content}
+            <script>
+                window.onload = function() {
+                    setTimeout(function() {
+                        window.print();
+                        window.close();
+                    }, 300);
+                };
+            <\/script>
+        </body>
+        </html>`);
+        printWindow.document.close();
+    }
+
+    // --- FUNGSI UNDUH DOKUMEN WORD (.DOC) ---
+    function unduhWord(elementId, filename) {
+        const content = document.getElementById(elementId).innerHTML;
+        if (!content || content.includes('empty-state')) {
+            updateStatus('Tidak ada dokumen untuk diunduh. Susun LKPD terlebih dahulu.', 'error');
+            return;
+        }
+
+        const css = `
+            @page { size: A4; margin: 2cm; }
+            body { font-family: 'Arial', sans-serif; line-height: 1.5; color: #000; }
+            h1, h2, h3, h4 { font-family: 'Arial', sans-serif; color: #000; }
+            .lkpd-title { text-align: center; text-decoration: underline; margin-bottom: 20px; font-size: 16pt; text-transform: uppercase; font-weight: bold; }
+            .identitas-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; }
+            .identitas-table td { padding: 4px 0; vertical-align: top; color: #000; }
+            .identitas-table td:first-child { width: 170px; font-weight: bold; }
+            .section-title { font-size: 13pt; border-bottom: 2px solid #000; margin: 20px 0 10px 0; padding-bottom: 3px; font-weight: bold; text-transform: uppercase; }
+            .kegiatan-box { margin-top: 15px; }
+            .kegiatan-header { background: #f0fdfa; border-left: 4px solid #0f766e; padding: 10px; margin-bottom: 10px; }
+            .badge-alur { background: #f59e0b; color: #78350f; font-size: 9pt; padding: 2px 8px; border-radius: 12px; font-weight: bold; display: inline-block; margin-bottom: 5px; text-transform: uppercase; }
+            .butir-tugas { margin-bottom: 15px; padding-left: 10px; }
+            .butir-judul { font-weight: bold; margin-bottom: 4px; }
+            table.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 10px; }
+            table.data-table th, table.data-table td { border: 1px solid #000; padding: 8px; font-size: 10pt; color: #000; text-align: left; }
+            table.data-table th { background: #f1f5f9; font-weight: bold; }
+            .line-blank { border-bottom: 1px dotted #000; display: block; width: 100%; height: 1.5em; margin-bottom: 4px; }
+            .uraian-blank { width: 100%; border: 1px dotted #000; margin-top: 5px; height: 70px; border-radius: 4px; }
+        `;
+
+        const docHTML = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+            <meta charset='utf-8'>
+            <title>${filename}</title>
+            <!--[if gte mso 9]>
+            <xml>
+            <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>100</w:Zoom>
+            <w:DoNotOptimizeForCustomXMLExport/>
+            </w:WordDocument>
+            </xml>
+            <![endif]-->
+            <style>${css}</style>
+        </head>
+        <body>
+            ${content}
+        </body>
+        </html>`;
+
+        const blob = new Blob(['\ufeff' + docHTML], { type: 'application/msword;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${filename}.doc`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        updateStatus(`Dokumen "${filename}.doc" berhasil diunduh!`, 'success');
+    }
+</script>
+</body>
+</html>
